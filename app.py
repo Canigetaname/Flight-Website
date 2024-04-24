@@ -154,6 +154,55 @@ def login():
 
     return render_template('login.html', login_failed=login_failed)
 
+@app.route('/discussion')
+def discussion():
+    # Connect to the MySQL database
+    db = pymysql.connect(
+        host=app.config['MYSQL_HOST'],
+        user=app.config['MYSQL_USER'],
+        password=app.config['MYSQL_PASSWORD'],
+        db=app.config['MYSQL_DB'],
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    try:
+        # Fetch discussion data from the MySQL table
+        with db.cursor() as cursor:
+            cursor.execute("SELECT * FROM discussion")
+            discussion_data = cursor.fetchall()
+
+        return render_template('discussion.html', discussion_data=discussion_data)
+
+    finally:
+        db.close()
+
+@app.route('/add_discussion_message', methods=['POST'])
+def add_discussion_message():
+    message = request.form.get('message')
+    user_id = session.get('user_id')
+    username = users.get(user_id, {}).get('username', 'Unknown')
+
+    if message and username:
+        db = pymysql.connect(
+            host=app.config['MYSQL_HOST'],
+            user=app.config['MYSQL_USER'],
+            password=app.config['MYSQL_PASSWORD'],
+            db=app.config['MYSQL_DB'],
+            cursorclass=pymysql.cursors.DictCursor
+        )
+
+        try:
+            with db.cursor() as cursor:
+                # Insert new message into the discussion table
+                sql = "INSERT INTO discussion (user_id, username, Comment) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (user_id, username, message))
+                db.commit()  # Commit changes
+
+        finally:
+            db.close()
+
+    return redirect(url_for('discussion'))  # Redirect back to the discussion page
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)

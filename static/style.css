@@ -489,6 +489,7 @@ body {
     color: #fff;
     padding: 20px; /* Adjust as needed */
     text-align: center;
+    height: 100vh; /* Set the height to cover the entire viewport */
 }
 
 
