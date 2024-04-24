@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="profile" style="background-image: url('/static/b.gif');background-size: cover;">
+    <h1>Welcome to Your Profile, {{ user_data['username'] }}!</h1>
+    <p><strong>User ID:</strong> {{ user_id }}</p>
+    <p><strong>Username:</strong> {{ user_data['username'] }}</p>
+    <p><strong>Email:</strong> {{ user_data['email'] }}</p>
+    <p><strong>Contact Number:</strong> {{ user_data['contact_number'] }}</p>
+    <p><strong>Full Name:</strong> {{ user_data['full_name'] }}</p>
+    <a href="/logout">Log Out</a>
+</div>
+{% endblock %}

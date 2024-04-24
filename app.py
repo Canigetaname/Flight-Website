@@ -4,6 +4,7 @@ import os
 import pymysql
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -36,8 +37,6 @@ with db.cursor() as cursor:
             'email': user_row['email'],
             'contact_number': user_row['contact_number'],
             'full_name': user_row['full_name'],
-            'booked_flight_id': user_row['booked_flight_id'],
-            'seats_booked': user_row['seats_booked']
         }
 
 
@@ -95,9 +94,7 @@ def register():
             'username': username,
             'email': email,
             'contact_number': contact_number,
-            'full_name': full_name,
-            'booked_flight_id': [],
-            'seats_booked': []
+            'full_name': full_name
         }
 
         # Update the MySQL database with the new user data
@@ -110,9 +107,7 @@ def register():
         user_database_path = os.path.join(os.path.dirname(__file__), 'user_database.txt')
         new_data = []
         for user_id, user_data in users.items():
-            booked_flight_id = '-'.join(user_data['booked_flight_id'])
-            seats_booked = '-'.join(user_data['seats_booked'])
-            user_data_str = f"{user_data['password_hash']}:{user_data['username']}:{user_data['email']}:{user_data['contact_number']}:{user_data['full_name']}:{booked_flight_id}:{seats_booked}"
+            user_data_str = f"{user_data['password_hash']}:{user_data['username']}:{user_data['email']}:{user_data['contact_number']}:{user_data['full_name']}"
             new_data.append(f"{user_id}:{user_data_str}\n")
         with open(user_database_path, 'w') as file:
             file.writelines(new_data)
