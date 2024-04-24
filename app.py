@@ -1,38 +1,55 @@
-from flask import Flask, render_template
+
+from flask import Flask, render_template, request, redirect, url_for
+from models import User, Booking, Airport
 
 app = Flask(__name__)
 
-# Sample data (replace with actual data fetched from the database)
-sample_airports = [
-    {'code': 'JFK', 'name': 'John F. Kennedy International Airport', 'city': 'New York', 'country': 'USA'},
-    {'code': 'LAX', 'name': 'Los Angeles International Airport', 'city': 'Los Angeles', 'country': 'USA'},
-    {'code': 'LHR', 'name': 'Heathrow Airport', 'city': 'London', 'country': 'UK'},
-]
-
-sample_flights = [
-    {'number': 'ABC123', 'departure_airport': 'JFK', 'arrival_airport': 'LAX'},
-    {'number': 'DEF456', 'departure_airport': 'LAX', 'arrival_airport': 'LHR'},
-    {'number': 'GHI789', 'departure_airport': 'LHR', 'arrival_airport': 'JFK'},
-]
-
-# Define routes and controller functions
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return render_template('home.html')
 
-@app.route('/view_airports')
-def view_airports():
-    # Logic to fetch airports from the database
-    airports = sample_airports  # Replace with actual data fetched from the database
-    return render_template('view_airports.html', airports=airports)
+@app.route('/airports')
+def airports():
+    airports = Airport.query.all()
+    return render_template('airports.html', airports=airports)
 
-@app.route('/view_flights')
-def view_flights():
-    # Logic to fetch flights from the database
-    flights = sample_flights  # Replace with actual data fetched from the database
-    return render_template('view_flights.html', flights=flights)
+@app.route('/users')
+def users():
+    users = User.query.all()
+    return render_template('users.html', users=users)
 
-# Add more routes and controller functions as needed
+@app.route('/bookings')
+def bookings():
+    bookings = Booking.query.all()
+    return render_template('bookings.html', bookings=bookings)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/add_airport', methods=['GET', 'POST'])
+def add_airport():
+    if request.method == 'POST':
+        code = request.form['code']
+        name = request.form['name']
+        city = request.form['city']
+        country = request.form['country']
+        new_airport = Airport(code, name, city, country)
+        db.session.add(new_airport)
+        db.session.commit()
+        return redirect(url_for('airports'))
+    return render_template('add_airport.html')
+
+@app.route('/add_user', methods=['GET', 'POST'])
+def add_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        new_user = User(username, password, email)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('users'))
+    return render_template('add_user.html')
+
+@app.route('/add_booking', methods=['GET', 'POST'])
+def add_booking():
+    if request.method == 'POST':
+        flight_id = request.form['flight_id']
+        passenger_id = request.form
