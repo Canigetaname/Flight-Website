@@ -101,10 +101,9 @@ body {
     font-size: 18px;
 }
 
-
 .home {
     /*background-image: url("/static/9 (3).gif");*/
-    background-image: url('background.png');
+    background-image: url('/static/9 (3).gif');
     background-size: cover; /* Cover the whole area while maintaining aspect ratio */
     background-position: center;
     color: #fff;
