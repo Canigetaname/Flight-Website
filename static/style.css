@@ -175,7 +175,7 @@ body {
     font-size: 18px;
 }
 
-/*.show-list {
+.show-list {
     background-image: url("/static/xyz.jpg");
     background-size: cover; /* Cover the whole area while maintaining aspect ratio */
     background-position: center;
