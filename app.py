@@ -65,6 +65,25 @@ with db.cursor() as cursor:
 def home():
     return render_template('home.html')
 
+@app.route('/search', methods=['GET'])
+def search():
+    # Get the search parameters from the request
+    departure_date = request.args.get('departure_date')
+    from_city = request.args.get('from_city', '')
+    to_city = request.args.get('to_city', '')
+
+    results = []
+    for flight_id, flight_data in flight_info.items():
+        if str(flight_data['departure_date']) == departure_date \
+                and ((not from_city) or (from_city.lower() in flight_data['from_city'].lower())) \
+                and ((not to_city) or (to_city.lower() in flight_data['to_city'].lower())):
+            results.append((flight_id, flight_data))
+
+    if results:
+        return render_template('search_results.html', results=results)
+    else:
+        return "<p>No flights found for the selected date and cities.</p>"
+
 @app.route('/profile')
 def profile():
     if 'user_id' in session:

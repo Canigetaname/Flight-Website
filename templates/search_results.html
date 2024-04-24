@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-results">
+    <h1>Search Results for '{{ search_query }}'</h1>
+    <ul class="flight-list">
+        {% if results %}
+            {% for flight_id, flight_data in results %}
+                <li>
+                    <div class="flight-info">
+                        <p>Flight ID: {{ flight_id }}</p>
+                        <p>From: {{ flight_data['from_city'] }}</p>
+                        <p>To: {{ flight_data['to_city'] }}</p>
+                        <p>Departure Date: {{ flight_data['departure_date'] }}</p>
+                        <p>Departure Time: {{ flight_data['departure_time'] }}</p>
+                        <p>Arrival Time: {{ flight_data['arrival_time'] }}</p>
+                        <p>Duration: {{ flight_data['duration'] }}</p>
+                        <p>Price: {{ flight_data['price'] }}</p>
+                        <p>Airline: {{ flight_data['airline'] }}</p>
+                        <br>
+                    </div>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>No flights found for the selected date and cities.</p>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
