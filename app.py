@@ -20,6 +20,12 @@ db = pymysql.connect(
     cursorclass=pymysql.cursors.DictCursor
 )
 
+# Define admin credentials (you can replace these with your actual admin credentials)
+admin_list = [
+    ('321', 'Dipto'),
+    ('123', 'Ishmum')
+]
+
 flight_seats = {flight_id: [] for flight_id in range(1, 26)}
 
 users={}
@@ -64,6 +70,98 @@ with db.cursor() as cursor:
             'departure_date': row['departure_date']
         }
         flight_info[flight_id] = flight_data
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    authenticated = False
+    authentication_failed = False
+    user_data = None  # Initialize user_data variable
+
+    if request.method == 'POST':
+        admin_name = request.form.get('admin_name')
+        admin_password = request.form.get('admin_password')
+
+        # Check if the admin's name and password match
+        for admin_info in admin_list:
+            if admin_info[1] == admin_name and admin_info[0] == admin_password:
+                authenticated = True
+                break
+
+        if not authenticated:
+            authentication_failed = True
+    
+        # Check if user identifier is provided and search for user
+        user_identifier = request.form.get('user_identifier')
+        if user_identifier:
+            user_data = search_user(user_identifier)
+
+    if authenticated:
+        return redirect(url_for('admin_panel', user_data=user_data))
+    else:
+        return render_template('admin.html', authentication_failed=authentication_failed, user_data=user_data)
+    
+@app.route('/admin/panel', methods=['GET', 'POST'])
+def admin_panel():
+    return render_template('admin_panel.html', users=users, flight_info=flight_info)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_authenticated', None)  # Remove admin authentication from session
+    return redirect(url_for('admin'))
+
+@app.route('/admin/add_flight', methods=['POST'])
+def add_flight():
+    # Get the flight details from the form submission
+    from_city = request.form.get('from_city')
+    to_city = request.form.get('to_city')
+    departure_time = request.form.get('departure_time')
+    arrival_time = request.form.get('arrival_time')
+    duration = request.form.get('duration')
+    price = request.form.get('price')
+    airline = request.form.get('airline')
+    departure_date = request.form.get('departure_date')
+    # Add other flight details fields here
+
+    # Insert the new flight into the database
+    with db.cursor() as cursor:
+        sql = "INSERT INTO flights (from_city, to_city, departure_time, arrival_time, duration, price, airline, departure_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (from_city, to_city, departure_time, arrival_time, duration, price, airline, departure_date))
+        db.commit()
+
+    # Redirect back to the admin panel
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/delete_flight', methods=['POST'])
+def delete_flight():
+    # Get the flight_id from the form submission
+    flight_id = int(request.form.get('flight_id'))
+
+    # Delete the flight from the database
+    with db.cursor() as cursor:
+        sql = "DELETE FROM flights WHERE flight_id = %s"
+        cursor.execute(sql, (flight_id,))
+        db.commit()
+
+    # Remove the flight from the flight_info dictionary
+    if flight_id in flight_info:
+        del flight_info[flight_id]
+
+    # Redirect back to the admin panel
+    return redirect(url_for('admin_panel'))
+
+def search_user(identifier):
+    # Search for user by user ID
+    for user_id, user_data in users.items():
+        if str(user_id) == identifier:
+            return {
+                'id': user_id,
+                'username': user_data['username'],
+                'email': user_data['email'],
+                'contact_number': user_data['contact_number'],
+                'full_name': user_data['full_name'],
+                'booked_flights': user_data['booked_flights']
+            }
+    return None
 
 @app.route('/')
 def home():

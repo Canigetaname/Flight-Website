@@ -1,0 +1,89 @@
+<!-- admin_panel.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 admin-panel-background">
+    <h2 class="mb-3">Admin Panel</h2>
+
+    <!-- Add New Flight Form -->
+    <form method="POST" action="{{ url_for('add_flight') }}">
+        <h4>Add New Flight</h4>
+        <div class="form-group">
+            <label for="from_city">From City:</label>
+            <input type="text" class="form-control" id="from_city" name="from_city" required>
+        </div>
+        <div class="form-group">
+            <label for="to_city">To City:</label>
+            <input type="text" class="form-control" id="to_city" name="to_city" required>
+        </div>
+        <div class="form-group">
+            <label for="departure_time">Departure Time:</label>
+            <input type="time" class="form-control" id="departure_time" name="departure_time" required>
+        </div>
+        <div class="form-group">
+            <label for="arrival_time">Arrival Time:</label>
+            <input type="time" class="form-control" id="arrival_time" name="arrival_time" required>
+        </div>
+        <div class="form-group">
+            <label for="duration">Duration:</label>
+            <input type="text" class="form-control" id="duration" name="duration" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" class="form-control" id="price" name="price" required>
+        </div>
+        <div class="form-group">
+            <label for="airline">Airline:</label>
+            <input type="text" class="form-control" id="airline" name="airline" required>
+        </div>
+        <div class="form-group">
+            <label for="departure_date">Departure Date:</label>
+            <input type="date" class="form-control" id="departure_date" name="departure_date" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Flight</button>
+    </form>
+
+    <!-- Flight Information Section -->
+    <div class="mt-3">
+        <h4>Flight List</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Flight ID</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Departure Time</th>
+              <th>Arrival Time</th>
+              <th>Duration</th>
+              <th>Price</th>
+              <th>Airline</th>
+              <th>Departure Date</th>
+              <th>Action</th> <!-- New column for delete button -->
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Iterate over flights and display each flight -->
+            {% for flight_id, flight_data in flight_info.items() %}
+              <tr>
+                <td>{{ flight_id }}</td>
+                <td>{{ flight_data.from_city }}</td>
+                <td>{{ flight_data.to_city }}</td>
+                <td>{{ flight_data.departure_time }}</td>
+                <td>{{ flight_data.arrival_time }}</td>
+                <td>{{ flight_data.duration }}</td>
+                <td>{{ flight_data.price }}</td>
+                <td>{{ flight_data.airline }}</td>
+                <td>{{ flight_data.departure_date }}</td>
+                <td>
+                  <form method="POST" action="{{ url_for('delete_flight') }}">
+                    <input type="hidden" name="flight_id" value="{{ flight_id }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-form" style="background-image: url('/static/a.gif'); background-size: cover;">
+    <h1>Admin Login</h1>
+    {% if authentication_failed %}
+        <p class="error">Authentication failed. Please check your credentials.</p>
+    {% endif %}
+    <form action="/admin" method="post">
+        <label for="admin_name">Admin Name:</label>
+        <input type="text" id="admin_name" name="admin_name" required>
+
+        <label for="admin_password">Password:</label>
+        <input type="password" id="admin_password" name="admin_password" required>
+
+        <input type="submit" value="Login">
+    </form>
+    {% if user_data %}
+        <div class="user-info">
+            <h2>User Information</h2>
+            <p><strong>User ID:</strong> {{ users.user_id }}</p>
+            <p><strong>Username:</strong> {{ users.username }}</p>
+            <p><strong>Email:</strong> {{ users.email }}</p>
+            <p><strong>Country:</strong> {{ users.contact_number }}</p>
+            <p><strong>Liked Category:</strong> {{ users.full_name }}</p>
+            <p><strong>Booked Flights:</strong> {{ users.booked_flights }}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
