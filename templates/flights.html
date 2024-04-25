@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flight-list-container">
+    <style>
+        .flight-list-container {
+            padding: 20px;
+        }
+
+        .flight-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .flight-item {
+            background-color: #050000;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .flight-link {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .flight-details {
+            padding: 20px;
+        }
+
+        .flight-date {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .flight-info p {
+            margin: 5px 0;
+        }
+    </style>
+
+    <h2>Departure Dates for all Flights</h2>
+    <div class="flight-list">
+        {% for flight_id, flight_data in flight_info.items() %}
+        <div class="flight-item">
+            <a href="/flight/{{ flight_id }}" class="flight-link">
+                <div class="flight-details">
+                    <div class="flight-date">{{ flight_data['departure_date'] }}</div>
+                    <div class="flight-info">
+                        <p><strong>Flight ID:</strong> {{ flight_id }}</p>
+                        <p><strong>From:</strong> {{ flight_data['from_city'] }}</p>
+                        <p><strong>To:</strong> {{ flight_data['to_city'] }}</p>
+                        <p><strong>Departure Time:</strong> {{ flight_data['departure_time'] }}</p>
+                        <p><strong>Arrival Time:</strong> {{ flight_data['arrival_time'] }}</p>
+                        <p><strong>Duration:</strong> {{ flight_data['duration'] }}</p>
+                        <p><strong>Price:</strong> {{ flight_data['price'] }}</p>
+                        <p><strong>Airline:</strong> {{ flight_data['airline'] }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

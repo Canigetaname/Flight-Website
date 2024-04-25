@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="show-details-container">
+    <div class="show-details">
+        <h1>{{ flight_data['airline'] }}</h1>
+        <p>From City: {{ flight_data['from_city'] }}</p>
+        <p><strong>To City:</strong> {{ flight_data['to_city'] }}</p>
+        <p><strong>Departure Date:</strong> {{ flight_data['departure_date'] }}</p>
+        <p><strong>Departure Time:</strong> {{ flight_data['departure_time'] }}</p>
+        <p><strong>Arrival Time:</strong> {{ flight_data['arrival_time'] }}</p>
+        <p><strong>Price: $</strong> {{ flight_data['price'] }}</p>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <form method="post" action="{{ url_for('add_to_booked', flight_id=flight_id) }}">
+        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    </form>
+</div>
+
+{% endblock %}

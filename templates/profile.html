@@ -7,6 +7,12 @@
     <p><strong>Email:</strong> {{ user_data['email'] }}</p>
     <p><strong>Contact Number:</strong> {{ user_data['contact_number'] }}</p>
     <p><strong>Full Name:</strong> {{ user_data['full_name'] }}</p>
+    <h2>Booked Flights:</h2>
+    <ul>
+        {% for flight_data in user_data['booked_flights'] %}
+        <li>{{ flight_data }}</li>
+        {% endfor %}
+    </ul>
     <!-- Wrap the logout button in a separate div and apply styling -->
     <div style="margin-top: 20px;">
         <a href="/logout" style="font-size: 20px; padding: 10px 20px; border-radius: 5px; background-color: #007acc; color: white; text-decoration: none;">Log Out</a>
